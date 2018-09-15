@@ -14,7 +14,7 @@ from pyautogui import size as getScreenSize
 from random import randint
 
 #using pyweening as a base. Will eventuall write additonal tweening algorithims inclusing curved mouse movement.
-from pytweening import linear 
+from pytweening import * 
 
 import time #for testing
 
@@ -53,23 +53,25 @@ def moveTo(targetX, targetY, duration, tween):
     steps = [(startX, startY)]
 
     for i in range(numOfSteps):
-        steps.append(getNextPoint(startX, startY, targetX, targetY, tween(i/numOfSteps)))
+        steps.append( getNextPoint(startX, startY, targetX, targetY, tween(i/numOfSteps)) )
         pass
                      
-    steps.append(targetX, targetY)
+    steps.append( (targetX, targetY) )
     
     for x, y in steps:
-        moveMouse(x,y)
+        mouseMove(x,y)
         time.sleep(sleepAmmount)
 
 def getNextPoint(x1, y1, x2, y2, n):
-    pass
+    x = (x2 - x1) * n + x1
+    y = (y2 - y1) * n + y1
+    return (x, y)
 
 def main():
     start = time.time()
     
     print(getPosition())
-    mouseMove(10,10)
+    moveTo(10,10, 1, easeInQuad)
     
     end = time.time()
     print(end-start)
