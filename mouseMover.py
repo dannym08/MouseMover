@@ -1,46 +1,78 @@
-## Human like mouse movement
-import pyautogui
-import time
-import random
+#from Quartz.CoreGraphics import *
+from Quartz.CoreGraphics import CGEventCreateMouseEvent
+from Quartz.CoreGraphics import CGEventPost
+from Quartz.CoreGraphics import kCGEventMouseMoved
+from Quartz.CoreGraphics import kCGMouseButtonLeft
+from Quartz.CoreGraphics import kCGHIDEventTap
+from Quartz.CoreGraphics import kCGEventLeftMouseDown
+from Quartz.CoreGraphics import kCGEventLeftMouseUp
 
-pyautogui.MINIMUM_DURATION = 0
-#pyautogui.MINIMUM_SLEEP = 0
-pyautogui.PAUSE = 0
+#using pyauto gui temp to get it running at first
+from pyautogui import position as getPosition 
+from pyautogui import size as getScreenSize
 
-## Move to exact coordinate
-def moveMouse(targetX, targetY, givenCords = True):
-    currentX, currentY = pyautogui.position()
-    
-    if givenCords == False: #gets coordinates input from user
-        print("Enter the x coordinatie and y in in this format x,y")
-        targetX, targetY = input().split(',')
+from random import randint
 
-    moves = random.randint(3, 8)
-    print(moves)
-    start = time.time()
-    
-    while moves > 0:
-        deltaX = ((targetX - currentX) / moves ) ##random movement of 8 in either direction
-        deltaY = ((targetY - currentY) / moves ) 
-        currentX = currentX + deltaX
-        currentY = currentY + deltaY
-        pyautogui.moveTo(currentX, currentY, 0.1, pyautogui.easeInQuad)
-        moves = moves - 1
+#using pyweening as a base. Will eventuall write additonal tweening algorithims inclusing curved mouse movement.
+from pytweening import linear 
 
-    print(pyautogui.position())   
-    end = time.time()
-    print(end - start)
+import time #for testing
 
-def checkCoordinate(targetX, targetY):
-    currentX, currentY = pyautogui.position()
-    if (currentX == targetX and currentY == targetY):
-        return True
+def createMouseEvent(source, posX, posY):
+    event = CGEventCreateMouseEvent(
+                    None, 
+                    source, 
+                    (posX, posY), 
+                    kCGMouseButtonLeft)
+    CGEventPost(kCGHIDEventTap, event)
+ 
+def mouseMove(posX,posY):
+    createMouseEvent(kCGEventMouseMoved, posX,posY)
+
+def mouseLeftClick():
+    ##clicks at the current position the mouse is at
+    posX, posY = getPosition()
+    createMouseEvent(kCGEventLeftMouseDown, posX, posY)
+    createMouseEvent(kCGEventLeftMouseUp, postX, posY)
+
+def moveTo(targetX, targetY, duration, tween):
+    '''Moves to the given x,y coordinate
+    targetX (int) is the desintation X coordination
+    targetY (int) is the destination Y coordination
+    duration (float/double) is the ammount of time in seconds you want to add to the mouse's travel time
+    tween (not implemented yet)'''
+    startX, startY = getPosition()
+    width, height = getScreenSize()
+
+    numOfSteps = max(width, height) ##should be changed and randomized
+    if duration == None or duration <=0:
+        sleepAmmount = 0
     else:
-        return False
+        sleepAmmount = duration/numOfSteps
+    
+    steps = [(startX, startY)]
 
+    for i in range(numOfSteps):
+        steps.append(getNextPoint(startX, startY, targetX, targetY, tween(i/numOfSteps)))
+        pass
+                     
+    steps.append(targetX, targetY)
+    
+    for x, y in steps:
+        moveMouse(x,y)
+        time.sleep(sleepAmmount)
+
+def getNextPoint(x1, y1, x2, y2, n):
+    pass
 
 def main():
-    moveMouse(10,10)
-    print("Done")
+    start = time.time()
     
+    print(getPosition())
+    mouseMove(10,10)
+    
+    end = time.time()
+    print(end-start)
+    print("done")
+
 main()
