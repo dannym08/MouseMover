@@ -1,5 +1,5 @@
 '''
-Library created in order to mimic human like mouse movement. 
+Library created in order to mimic human like mouse movement. Moves the mouse in a straight line at various speeds. 
 '''
 #Used for needed mouse events
 from Quartz.CoreGraphics import CGEventCreateMouseEvent
@@ -19,7 +19,39 @@ from pytweening import *
 
 import time
 from random import randint
-
+''' Pytweening options for tween in moveTo
+'linear',
+'easeInQuad',
+'easeOutQuad',
+'easeInOutQuad',
+'easeInCubic',
+'easeOutCubic',
+'easeInOutCubic',
+'easeInQuart',
+'easeOutQuart',
+'easeInOutQuart',
+'easeInQuint',
+'easeOutQuint',
+'easeInOutQuint',
+'easeInSine',
+'easeOutSine',
+'easeInOutSine',
+'easeInExpo',
+'easeOutExpo',
+'easeInOutExpo',
+'easeInCirc',
+'easeOutCirc',
+'easeInOutCirc',
+'easeInElastic',
+'easeOutElastic',
+'easeInOutElastic',
+'easeInBack',
+'easeOutBack',
+'easeInOutBack',
+'easeInBounce',
+'easeOutBounce',
+'easeInOutBounce',
+'''
 def _getPosition():
     '''
     Returns the current mouse position as integers in the format of (x,y)
